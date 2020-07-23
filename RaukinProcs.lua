@@ -15,12 +15,12 @@ function RaukinProcs.ADDON_LOADED(self,event,arg1)
 		RaukinProcsDB = RaukinProcsDB or {}
 		RaukinProcsDB.Moveable = RaukinProcsDB.Moveable or false
 
-        	RaukinProcsDB.posX = RaukinProcsDB.target.posX or 0
-       		RaukinProcsDB.posY = RaukinProcsDB.target.posY or 20
-        	RaukinProcsDB.width = RaukinProcsDB.target.width or 34
-        	RaukinProcsDB.height = RaukinProcsDB.target.height or 34	
-		RaukinProcsDB.alpha = RaukinProcsDB.target.alpha or 1
-		RaukinProcsDB.point = RaukinProcsDB.target.point or "CENTER"
+        	RaukinProcsDB.posX = RaukinProcsDB.posX or 0
+       		RaukinProcsDB.posY = RaukinProcsDB.posY or 20
+        	RaukinProcsDB.width = RaukinProcsDB.width or 34
+        	RaukinProcsDB.height = RaukinProcsDB.height or 34	
+		RaukinProcsDB.alpha = RaukinProcsDB.alpha or 1
+		RaukinProcsDB.point = RaukinProcsDB.point or "CENTER"
 
 ------------------------------------------- Frame -------------------------------------------
 		Rframe = CreateFrame("Frame",nil,UIParent)
@@ -53,6 +53,7 @@ function RaukinProcs.ADDON_LOADED(self,event,arg1)
 				RaukinProcsDB.posX = xOfs 
 				RaukinProcsDB.posY = yOfs 
 			end)
+		RaukinProcs.MakeOptions()
 
 	end
 end
@@ -78,20 +79,89 @@ function RaukinProcs.MakeOptions(self)
 	}
     opt.args.general = {
         type = "group",
-        name = "Sizing options",
-        order = 2,
+        name = "Addon options",
+        order = 1,
         args = {
-            MoveTog = {
+            SelectSpellId = {
                 type = "group",
-                name = "Move Frames",
+                name = "Select SpellId",
                 guiInline = true,
                 order = 1,
                 args = {
-                    Toggle = {
-                        name = "Move Icons for 25sec",
-                        type = "toggle",
-                        get = function(info) return RaukinProcsDB.Moveable end,
-                        set = function(info, s) RaukinProcsDB.Moveable = s; RaukinProcs.UpdateFrames(); end,
+                    Drop = {
+                        name = "Spell Id Select",
+                        type = "select",
+			values = {112, 113, 114},
+			style = "dropdown",
+                        get = function(info) end,
+                        set = function(info, s) end,
+                    },
+                },
+            }, 
+            InputBox1 = {
+                type = "group",
+                name = "SpellId",
+                guiInline = true,
+                order = 2,
+                args = {
+                    SpellIdInput = {
+                        name = "SpellId",
+                        type = "input",
+                        get = function(info) end,
+                        set = function(info, s) end,
+                    },
+                },
+            }, 
+            Inputbox2 = {
+                type = "group",
+                name = "Manual Cooldown",
+                guiInline = true,
+                order = 3,
+                args = {
+                    MCDInput = {
+                        name = "Cooldown",
+                        type = "input",
+                        get = function(info) end,
+                        set = function(info, s) end,
+                    },
+                },
+            }, 
+            InputButton = {
+                type = "group",
+                name = "Input",
+                guiInline = true,
+                order = 4,
+                args = {
+                    InputButton = {
+                        name = "Input",
+                        type = "execute",
+			func = function(info) end,
+                    },
+                },
+            },
+            DeleteButton = {
+                type = "group",
+                name = "Delete",
+                guiInline = true,
+                order = 5,
+                args = {
+                    DeleteButton = {
+                        name = "Delete",
+                        type = "execute",
+			func = function(info) end,
+                    },
+                },
+            },  
+            MoveButton = {
+                type = "group",
+                name = "Move Bars",
+                guiInline = true,
+                order = 6,
+                args = {
+                    Button = {
+                        name = "Move Bars",
+                        type = "execute",
+			func = function(info) end,
                     },
                 },
             },            
@@ -99,13 +169,13 @@ function RaukinProcs.MakeOptions(self)
                 type = "group",
                 name = "Target Sizing",
                 guiInline = true,
-                order = 1,
+                order = 7,
                 args = {
                     size = {
                         name = "Target Icon Size",
                         type = "range",
-                        get = function(info) return RaukinProcsDB.target.width end,
-                        set = function(info, s) RaukinProcsDB.target.width = s; RaukinProcsDB.target.height = s; RaukinProcs.UpdateFrames(); end,
+                        get = function(info) return RaukinProcsDB.width end,
+                        set = function(info, s) RaukinProcsDB.width = s; RaukinProcsDB.height = s; end,
                         min = 1,
                         max = 400,
                         step = 1,
@@ -116,22 +186,33 @@ function RaukinProcs.MakeOptions(self)
                 type = "group",
                 name = "Aplha of Frames",
                 guiInline = true,
-                order = 5,
+                order = 8,
                 args = {
                     alpha = {
                         name = "Alpha of Icons",
                         type = "range",
-                        get = function(info) return RaukinProcsDB.focus.alpha end,
-                        set = function(info, s) RaukinProcsDB.focus.alpha = s; RaukinProcsDB.target.alpha = s; RaukinProcsDB.focuskick.alpha = s; RaukinProcsDB.targetkick.alpha = s; RaukinProcs.UpdateFrames(); end,
+                        get = function(info) end,
+                        set = function(info, s) end,
                         min = 0,
                         max = 1,
                         step = 0.1,
                     },
                 },
             },
-        type = "group",
-        name = "Proc Management",
-        order = 1,
+            BarTog = {
+                type = "group",
+                name = "Only Icons",
+                guiInline = true,
+                order = 9,
+                args = {
+                    Bartog = {
+                        name = "Only show the icons",
+                        type = "toggle",
+                        get = function(info) end,
+                        set = function(info, s) end,
+                    },
+                },
+            }, 
         },
     }
     
